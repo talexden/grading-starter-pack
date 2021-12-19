@@ -13,8 +13,8 @@ const INITIAL_STATE = {
     peopleCount: 0,
     phone: '',
     isLegal: false,
-  }
-}
+  },
+};
 
 const NO_FILTER = 'all';
 
