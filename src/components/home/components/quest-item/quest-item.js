@@ -1,13 +1,15 @@
-import * as S from './quests-catalog.styled';
+import * as S from './quests-item.styled';
 import {ReactComponent as IconPerson} from '../../../../assets/img/icon-person.svg';
 import {ReactComponent as IconPuzzle} from '../../../../assets/img/icon-puzzle.svg';
-import {questLevel} from '../../../../utils/const';
+import {AppRoute, QUEST_LEVEL} from '../../../../utils/const';
 
 export const QuestItem = ({quest}) => {
   const {previewImg, title, peopleCount, level, id} = quest;
   return (
     <S.QuestItem>
-      <S.QuestItemLink to={`/${id}`}>
+      <S.QuestItemLink
+        to={`${AppRoute.QuestDetails}${id}`}
+      >
         <S.Quest>
           <S.QuestImage
             src={previewImg}
@@ -26,7 +28,7 @@ export const QuestItem = ({quest}) => {
               </S.QuestFeatureItem>
               <S.QuestFeatureItem>
                 <IconPuzzle />
-                {questLevel.get(level)}
+                {QUEST_LEVEL[level]}
               </S.QuestFeatureItem>
             </S.QuestFeatures>
           </S.QuestContent>

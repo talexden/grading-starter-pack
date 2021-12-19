@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import { MainLayout } from 'components/common/common';
 import { ReactComponent as IconClock } from 'assets/img/icon-clock.svg';
 import { ReactComponent as IconPerson } from 'assets/img/icon-person.svg';
@@ -9,30 +9,26 @@ import {useParams} from 'react-router-dom';
 import {fetchSelectedQuest} from '../../services/api-action';
 import {useDispatch, useSelector} from 'react-redux';
 import {Loading} from '../loading/loading';
-import {questLevel, questType} from '../../utils/const';
+import {QUEST_LEVEL, QUEST_NAMES} from '../../utils/const';
+import {setIsBookingModalOpened} from '../../store/action';
 
+const typeAdapter = (type) => type === 'sci-fi' ? 'sciFi' : type;
 
 const DetailedQuest = () => {
-  const [isBookingModalOpened, setIsBookingModalOpened] = useState(false);
+  const dispatch = useDispatch();
+  const isBookingModalOpened = useSelector(state => state.isBookingModalOpened);
+  const selectedQuest = useSelector(state => state.selectedQuest);
 
   const onBookingBtnClick = () => {
-    setIsBookingModalOpened(true);
+    dispatch(setIsBookingModalOpened(true));
   };
 
-
-  const dispatch = useDispatch();
-  const id = useParams().id;
+  const {id} = useParams();
   useEffect(()=>{
     dispatch(fetchSelectedQuest(id));
   },[id, dispatch])
 
-
-  const selectedQuest = useSelector(state => state.selectedQuest);
-  console.log(selectedQuest);
-
-  if (selectedQuest === null) {
-    return <Loading />;
-  } else {
+  if (selectedQuest !== null) {
     const {title, description, coverImg, type, level, peopleCount, duration} = selectedQuest;
 
     return (
@@ -47,7 +43,7 @@ const DetailedQuest = () => {
           <S.PageContentWrapper>
             <S.PageHeading>
               <S.PageTitle>{title}</S.PageTitle>
-              <S.PageSubtitle>{questType.get(type)}</S.PageSubtitle>
+              <S.PageSubtitle>{QUEST_NAMES[typeAdapter(type)].titleRuss}</S.PageSubtitle>
             </S.PageHeading>
 
             <S.PageDescription>
@@ -62,7 +58,7 @@ const DetailedQuest = () => {
                 </S.FeaturesItem>
                 <S.FeaturesItem>
                   <IconPuzzle width="24" height="24" />
-                  <S.FeatureTitle>{questLevel.get(level)}</S.FeatureTitle>
+                  <S.FeatureTitle>{QUEST_LEVEL[level]}</S.FeatureTitle>
                 </S.FeaturesItem>
               </S.Features>
 
@@ -80,7 +76,9 @@ const DetailedQuest = () => {
         </S.Main>
       </MainLayout>
     );
+  } else {
+    return <Loading />;
   };
-  }
+};
 
 export default DetailedQuest;

@@ -1,9 +1,13 @@
 import {createReducer} from '@reduxjs/toolkit';
-import {setQuests, setSelectedQuests} from './action';
+import {Action} from './action';
 
-const initialState = {
+const INITIAL_STATE = {
   quests: [],
+  filteredQuests: [],
   selectedQuest: null,
+  questFilter: 'all',
+  isClearOrderForm: false,
+  isBookingModalOpened: false,
   orderPost: {
     name: '',
     peopleCount: 0,
@@ -12,25 +16,43 @@ const initialState = {
   }
 }
 
-const reducer = createReducer(initialState, (builder) => {
+const NO_FILTER = 'all';
+
+const getFilteredQuests = (key, quests) => {
+  let filteredQuests = [...quests];
+  if (key !== NO_FILTER) {
+    filteredQuests = quests.filter((quest) => quest.type === key);
+  }
+  return filteredQuests;
+};
+
+
+
+
+const reducer = createReducer(INITIAL_STATE, (builder) => {
   builder
-    .addCase(setQuests, (state, action) => {
+    .addCase(Action.SetQuests, (state, action) => {
       const {quests} = action.payload;
       state.quests = quests;
+      state.filteredQuests = [...quests];
     })
-    .addCase(setSelectedQuests, (state, action) => {
+    .addCase(Action.SetSelectedQuest, (state, action) => {
       state.selectedQuest = action.payload;
     })
-    // .addCase(loadOfferById, (state, action) => {
-    //   const {offerById} = action.payload;
-    //   state.offerById = offerById;
-    // })
-    // .addCase(setOrderPost, (state, action) => {
-    //   const {orderPost} = action.payload;
-    //   state.orderPost = orderPost;
-    //
-  // })
-  ;
+    .addCase(Action.SetClearSelectedQuest, (state) => {
+      state.selectedQuest = null;
+    })
+
+    .addCase(Action.SetQuestFilter, (state, action) => {
+      state.questFilter = action.payload;
+      state.filteredQuests = getFilteredQuests(state.questFilter, state.quests);
+    })
+    .addCase(Action.SetClearOrderForm, (state,  action) => {
+      state.isClearOrderForm = action.payload;
+    })
+    .addCase(Action.SetIsBookingModalOpened, (state,  action) => {
+      state.isBookingModalOpened = action.payload;
+    });
 });
 
 export {reducer};

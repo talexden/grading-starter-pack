@@ -1,6 +1,8 @@
 import { MainLayout, PageTitle, PageSubtext } from 'components/common/common';
 import contactsMap from 'assets/img/contacts-map.jpg';
 import * as S from './contacts.styled';
+import {CITY} from '../../utils/const';
+import Map from './map/map';
 
 const Contacts = () => (
   <MainLayout>
@@ -47,6 +49,8 @@ const Contacts = () => (
               width="649"
               height="336"
             />
+
+            <Map city={CITY} />
           </S.ContactsMap>
         </S.Contacts>
       </S.ContentWrapper>
